@@ -1,6 +1,5 @@
 package core.basesyntax;
 
-import java.util.HashMap;
 import java.util.Objects;
 
 public class MyHashMap<K, V> implements MyMap<K, V> {
@@ -20,7 +19,7 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
 
     @Override
     public void put(K key, V value) {
-        if (threshold < arraySize) {
+        if (threshold == arraySize) {
             resize();
         }
 
@@ -60,13 +59,13 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
     public V getValue(K key) {
         int hash = findHash(key);
 
-        Node<K, V> findtNode = nodes[hash];
+        Node<K, V> findNode = nodes[hash];
 
-        while (findtNode != null) {
-            if (equalsKey(findtNode, key)) {
-                return findtNode.value;
+        while (findNode != null) {
+            if (equalsKey(findNode, key)) {
+                return findNode.value;
             }
-            findtNode = findtNode.nextNode;
+            findNode = findNode.nextNode;
         }
 
         return null;
@@ -90,7 +89,6 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
     }
 
     private void resize() {
-        HashMap<Object, Object> objectObjectHashMap = new HashMap<>();
         int newArrayLength = nodes.length * 2;
         threshold = (int) (newArrayLength * DEFAULT_LOAD_CAPACITY);
 
@@ -98,9 +96,7 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
         nodes = new Node[newArrayLength];
         arraySize = 0;
         for (int i = 0; i < tempNodes.length; i++) {
-            if (tempNodes[i] == null) {
-                nodes[i] = null;
-            } else {
+            if (tempNodes[i] != null) {
                 put(tempNodes[i].key, tempNodes[i].value);
                 if (tempNodes[i].nextNode != null) {
                     Node<K, V> findLastNode = tempNodes[i].nextNode;
